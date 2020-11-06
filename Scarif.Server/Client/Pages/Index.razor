@@ -56,6 +56,8 @@
         SignalR.On<IDictionary<string, string>>("UpdateOnlineSources", ReceiveSourcesUpdate);
 
         await SignalR.StartAsync();
+
+        OnlineSources = await SignalR.InvokeAsync<IDictionary<string, string>>("RequestOnlineSources");
     }
 
     private void ReceiveSourcesUpdate(IDictionary<string, string> update)

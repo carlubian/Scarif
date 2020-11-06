@@ -43,6 +43,16 @@ namespace Scarif.Server.Server.Hubs
         }
 
         /// <summary>
+        /// Called from the client to request a manual update
+        /// of the connected log sources.
+        /// </summary>
+        /// <returns></returns>
+        public IDictionary<string, string> RequestOnlineSources()
+        {
+            return OnlineSources;
+        }
+
+        /// <summary>
         /// Called from log sources when they connect to report
         /// that they are online.
         /// </summary>
