@@ -25,6 +25,11 @@ namespace Scarif.Server.Server.Persistence
                 Name = "Agenda 2.0",
                 Url = "agenda2"
             };
+            yield return new ScarifApp
+            {
+                Name = "Test",
+                Url = "test"
+            };
         }
 
         public string AppNameFromUrl(string appUrl)
@@ -37,6 +42,8 @@ namespace Scarif.Server.Server.Persistence
                     return "TimeChef";
                 case "agenda2":
                     return "Agenda 2.0";
+                case "test":
+                    return "Test";
                 default:
                     return "[Unknown]";
             }
