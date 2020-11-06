@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Protobuf\Scarif.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.13.0" />
+    <PackageReference Include="Google.Protobuf.Tools" Version="3.13.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.33.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="3.1.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protobuf\Scarif.proto" />
+  </ItemGroup>
+
+</Project>

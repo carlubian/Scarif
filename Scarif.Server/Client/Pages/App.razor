@@ -1,0 +1,85 @@
+@page "/app"
+@using Microsoft.AspNetCore.SignalR.Client
+@using Scarif.Server.Client.Core
+@implements IDisposable
+@inject NavigationManager NavManager
+
+<h1>@AppName Logs</h1>
+
+<p>These are the recorded logs for the @AppName App.</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Component</th>
+            <th>Severity</th>
+            <th>Timestamp</th>
+            <th>Message</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Server:Process:FuncName</td>
+            <td><span class="badge badge-secondary">Trace</span></td>
+            <td>@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")</td>
+            <td>Trace event logs are used to debug, but usually pollute the logs.</td>
+        </tr>
+        <tr>
+            <td>Server:Process:OtherFunc</td>
+            <td><span class="badge badge-info">Info</span></td>
+            <td>@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")</td>
+            <td>Info event logs communicate the expected flow of the app.</td>
+        </tr>
+        <tr>
+            <td>Server:Dispose:Ctor</td>
+            <td><span class="badge badge-warning">Warning</span></td>
+            <td>@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")</td>
+            <td>Warning event logs convey unusual situations that the app can handle on its own.</td>
+        </tr>
+        <tr>
+            <td>Server:Util:Rounding</td>
+            <td><span class="badge badge-danger">Error</span></td>
+            <td>@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")</td>
+            <td>Error event logs indicate crashes or other critical failures in the app.</td>
+        </tr>
+    </tbody>
+</table>
+
+
+@code {
+    private HubConnection SignalR;
+    public string AppName;
+    public string AppUrl;
+
+    protected override async Task OnInitializedAsync()
+    {
+        SignalR = new HubConnectionBuilder()
+            .WithUrl(NavManager.ToAbsoluteUri("/scarif"))
+            .Build();
+        await SignalR.StartAsync();
+
+        await ParseQueryString();
+        NavManager.LocationChanged += HandleLocationChanged;
+    }
+
+    async void HandleLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        await ParseQueryString();
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// Method used to figure out which app are we on.
+    /// </summary>
+    /// <returns></returns>
+    private async Task ParseQueryString()
+    {
+        NavManager.TryGetQueryString<string>("id", out AppUrl);
+        AppName = await SignalR.InvokeAsync<string>("AppNameFromUrl", AppUrl);
+    }
+
+    public void Dispose()
+    {
+        NavManager.LocationChanged -= HandleLocationChanged;
+    }
+}
