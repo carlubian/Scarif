@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Scarif.Server.Client.Core;
 using Scarif.Server.Server.Core;
 using Scarif.Server.Server.Hubs;
 using System.Linq;
@@ -39,6 +40,7 @@ namespace Scarif.Server.Server
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new[] { "application/octet-stream" });
             });
+            services.AddSingleton<UpdateService>();
 
         }
 

@@ -1,4 +1,5 @@
 ﻿using Scarif.Core.Model;
+using Scarif.Protobuf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,8 @@ namespace Scarif.Server.Server.Persistence
 {
     public class TestPersistence : IPersistence
     {
+        private static IDictionary<string, IEnumerable<LogMessage>> _Storage = new Dictionary<string, IEnumerable<LogMessage>>();
+
         public IEnumerable<ScarifApp> GetAllApps()
         {
             yield return new ScarifApp
@@ -47,6 +50,24 @@ namespace Scarif.Server.Server.Persistence
                 default:
                     return "[Unknown]";
             }
+        }
+
+        public void InsertLog(LogMessage message)
+        {
+            var app = message.App;
+
+            if (!_Storage.ContainsKey(app))
+                _Storage.Add(app, new List<LogMessage>());
+
+            (_Storage[app] as List<LogMessage>).Add(message);
+        }
+
+        public IEnumerable<LogMessage> AllLogsForApp(string appName)
+        {
+            if (_Storage.ContainsKey(appName))
+                return _Storage[appName];
+
+            return Enumerable.Empty<LogMessage>();
         }
     }
 }

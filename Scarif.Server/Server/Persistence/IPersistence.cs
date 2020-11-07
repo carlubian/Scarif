@@ -1,4 +1,5 @@
 ﻿using Scarif.Core.Model;
+using Scarif.Protobuf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,7 @@ namespace Scarif.Server.Server.Persistence
     {
         IEnumerable<ScarifApp> GetAllApps();
         string AppNameFromUrl(string appUrl);
+        void InsertLog(LogMessage message);
+        IEnumerable<LogMessage> AllLogsForApp(string appName);
     }
 }

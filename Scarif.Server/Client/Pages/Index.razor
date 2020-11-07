@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.SignalR.Client
+@inject UpdateService Update
 @inject NavigationManager NavManager
 
 <div class="container-fluid">
@@ -58,6 +59,8 @@
         await SignalR.StartAsync();
 
         OnlineSources = await SignalR.InvokeAsync<IDictionary<string, string>>("RequestOnlineSources");
+
+        Update.ActiveApp = "";
     }
 
     private void ReceiveSourcesUpdate(IDictionary<string, string> update)

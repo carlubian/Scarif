@@ -1,7 +1,9 @@
 @page "/app"
 @using Microsoft.AspNetCore.SignalR.Client
 @using Scarif.Server.Client.Core
+@using Scarif.Protobuf
 @implements IDisposable
+@inject UpdateService Update
 @inject NavigationManager NavManager
 
 <h1>@AppName Logs</h1>
@@ -18,30 +20,15 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>Server:Process:FuncName</td>
-            <td><span class="badge badge-secondary">Trace</span></td>
-            <td>@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")</td>
-            <td>Trace event logs are used to debug, but usually pollute the logs.</td>
-        </tr>
-        <tr>
-            <td>Server:Process:OtherFunc</td>
-            <td><span class="badge badge-info">Info</span></td>
-            <td>@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")</td>
-            <td>Info event logs communicate the expected flow of the app.</td>
-        </tr>
-        <tr>
-            <td>Server:Dispose:Ctor</td>
-            <td><span class="badge badge-warning">Warning</span></td>
-            <td>@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")</td>
-            <td>Warning event logs convey unusual situations that the app can handle on its own.</td>
-        </tr>
-        <tr>
-            <td>Server:Util:Rounding</td>
-            <td><span class="badge badge-danger">Error</span></td>
-            <td>@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")</td>
-            <td>Error event logs indicate crashes or other critical failures in the app.</td>
-        </tr>
+        @foreach (var log in Logs)
+        {
+            <tr>
+                <td>@log.Component</td>
+                <td><span class="@BadgeClassFromSeverity(log.Severity)">@log.Severity</span></td>
+                <td>@log.Timestamp.ToDateTime().ToString("yyyy-MM-dd HH:mm:ss.fff")</td>
+                <td>@log.Message</td>
+            </tr>
+        }
     </tbody>
 </table>
 
@@ -51,21 +38,60 @@
     public string AppName;
     public string AppUrl;
 
+    public IEnumerable<LogMessage> Logs = new List<LogMessage>();
+
     protected override async Task OnInitializedAsync()
     {
         SignalR = new HubConnectionBuilder()
             .WithUrl(NavManager.ToAbsoluteUri("/scarif"))
             .Build();
+        SignalR.On<string>("NotifyIncomingLog", HandleIncomingLog);
         await SignalR.StartAsync();
 
         await ParseQueryString();
+        PopulateLogs();
+        Update.Clear(AppName);
+        Update.ActiveApp = AppName;
         NavManager.LocationChanged += HandleLocationChanged;
+    }
+
+    public async void PopulateLogs()
+    {
+        Logs = await SignalR.InvokeAsync<IEnumerable<LogMessage>>("RequestAppLogs", AppName);
+        StateHasChanged();
     }
 
     async void HandleLocationChanged(object sender, LocationChangedEventArgs e)
     {
         await ParseQueryString();
+        Logs = new List<LogMessage>();
+        PopulateLogs();
+        Update.Clear(AppName);
+        Update.ActiveApp = AppName;
         StateHasChanged();
+    }
+
+    void HandleIncomingLog(string app)
+    {
+        if (app.Equals(AppName))
+            PopulateLogs();
+    }
+
+    string BadgeClassFromSeverity(string severity)
+    {
+        switch (severity)
+        {
+            case "Trace":
+                return "badge badge-secondary";
+            case "Info":
+                return "badge badge-info";
+            case "Warning":
+                return "badge badge-warning";
+            case "Error":
+                return "badge badge-danger";
+            default:
+                return "badge badge-light";
+        }
     }
 
     /// <summary>

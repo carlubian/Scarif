@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Google.Protobuf;
+using Microsoft.AspNetCore.SignalR;
 using Scarif.Core.Model;
+using Scarif.Protobuf;
 using Scarif.Server.Server.Persistence;
 using System;
 using System.Collections.Generic;
@@ -10,7 +12,7 @@ namespace Scarif.Server.Server.Hubs
 {
     public class ScarifHub : Hub
     {
-        private IPersistence Persistence = new TestPersistence();
+        private static IPersistence Persistence = new SQLitePersistence();
 
         private static IDictionary<string, string> OnlineSources = new Dictionary<string, string>();
 
@@ -53,6 +55,17 @@ namespace Scarif.Server.Server.Hubs
         }
 
         /// <summary>
+        /// Called from the client to receive updated log
+        /// messages for a specific app.
+        /// </summary>
+        /// <param name="appName"></param>
+        /// <returns></returns>
+        public IEnumerable<LogMessage> RequestAppLogs(string appName)
+        {
+            return Persistence.AllLogsForApp(appName);
+        }
+
+        /// <summary>
         /// Called from log sources when they connect to report
         /// that they are online.
         /// </summary>
@@ -71,7 +84,10 @@ namespace Scarif.Server.Server.Hubs
         /// <param name="logBase64"></param>
         public void ReceiveLog(string logBase64)
         {
-            Console.WriteLine($"Received data: {logBase64}");
+            var message = LogMessage.Parser.ParseFrom(ByteString.FromBase64(logBase64));
+
+            Persistence.InsertLog(message);
+            Clients.All.SendAsync("NotifyIncomingLog", message.App);
         }
     }
 }

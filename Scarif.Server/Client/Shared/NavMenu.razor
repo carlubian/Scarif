@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.SignalR.Client
 @using Scarif.Core.Model
+@inject UpdateService Update
 @inject NavigationManager NavigationManager
 
 <div class="top-row pl-4 navbar navbar-dark">
@@ -16,6 +17,10 @@
                     @if (AnySourcesForApp(app.Name))
                     {
                         <span class="badge badge-light">Online</span>
+                    }
+                    @if (Update.ForApp.ContainsKey(app.Name) && Update.ForApp[app.Name] > 0)
+                    {
+                        <span>&nbsp;</span><span class="badge badge-danger">@Update.ForApp[app.Name]</span>
                     }
                 </NavLink>
             </li>
@@ -36,7 +41,10 @@
             .WithUrl(NavigationManager.ToAbsoluteUri("/scarif"))
             .Build();
         SignalR.On<IDictionary<string, string>>("UpdateOnlineSources", ReceiveSourcesUpdate);
+        SignalR.On<string>("NotifyIncomingLog", ReceiveLog);
         await SignalR.StartAsync();
+
+        Update.Update += () => StateHasChanged();
 
         Apps = await SignalR.InvokeAsync<IEnumerable<ScarifApp>>("GetAllApps");
         OnlineSources = await SignalR.InvokeAsync<IDictionary<string, string>>("RequestOnlineSources");
@@ -46,6 +54,11 @@
     {
         OnlineSources = update;
         this.StateHasChanged();
+    }
+
+    private void ReceiveLog(string app)
+    {
+        Update.ReceiveLog(app);
     }
 
     private bool AnySourcesForApp(string appName)
