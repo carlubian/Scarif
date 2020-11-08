@@ -52,7 +52,7 @@ namespace Scarif.Server.Server.Persistence
             }
         }
 
-        public void InsertLog(LogMessage message)
+        public bool InsertLog(LogMessage message)
         {
             var app = message.App;
 
@@ -60,6 +60,8 @@ namespace Scarif.Server.Server.Persistence
                 _Storage.Add(app, new List<LogMessage>());
 
             (_Storage[app] as List<LogMessage>).Add(message);
+
+            return false;
         }
 
         public IEnumerable<LogMessage> AllLogsForApp(string appName)
@@ -68,6 +70,16 @@ namespace Scarif.Server.Server.Persistence
                 return _Storage[appName];
 
             return Enumerable.Empty<LogMessage>();
+        }
+
+        public void InsertInternalLog(LogMessage message)
+        {
+            
+        }
+
+        public void InsertInternalLog(string component, string severity, string message)
+        {
+            
         }
     }
 }

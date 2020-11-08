@@ -1,7 +1,9 @@
-﻿using Scarif.Core;
+﻿using Google.Protobuf.WellKnownTypes;
+using Scarif.Core;
 using Scarif.Core.Model;
 using Scarif.Protobuf;
 using Scarif.Server.Server.Core;
+using Scarif.Server.Server.Hubs;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,12 +22,18 @@ namespace Scarif.Server.Server.Persistence
             if (!Directory.Exists(logDir))
                 Directory.CreateDirectory(logDir);
 
+            // Load Scarif logs
+            Adapters.Add("Scarif", SQLiteAdapter.CreateInternalAdapter());
+
             // Get all app files and open as SQLite
             var appUrls = Directory.EnumerateFiles(logDir, "*.scarif");
             foreach (var appUrl in appUrls)
             {
                 var fileName = new FileInfo(appUrl).Name.Replace(".scarif", "");
-                Console.WriteLine($"Located app in {appUrl}: {fileName}");
+                if (fileName is "Internal.Logs")
+                    continue;
+
+                InsertInternalLog("SQLitePersistence:Ctor", "Info", $"Located app in {appUrl}: {fileName}");
                 var adapter = SQLiteAdapter.From(fileName);
                 Adapters.Add(adapter.SelectAppName(), adapter);
             }
@@ -35,17 +43,16 @@ namespace Scarif.Server.Server.Persistence
         {
             if (!Adapters.ContainsKey(appName))
             {
-                Console.WriteLine($"No adapter found for app {appName}");
+                ScarifHub.Persistence.InsertInternalLog("SQLitePersistence:AllLogsForApp", "Error", $"No adapter found for app {appName}");
                 return Enumerable.Empty<LogMessage>();
             }
 
-            Console.WriteLine($"Reading all logs from {appName}");
             return Adapters[appName].SelectAllLogs();
         }
 
         public string AppNameFromUrl(string appUrl)
         {
-            Console.WriteLine($"Reading app name from {appUrl}");
+            ScarifHub.Persistence.InsertInternalLog("SQLitePersistence:AppNameFromUrl", "Trace", $"Reading app name from {appUrl}");
 
             return Adapters.FirstOrDefault(a => a.Value.appUrl.Equals(appUrl)).Key;
         }
@@ -54,6 +61,9 @@ namespace Scarif.Server.Server.Persistence
         {
             foreach (var adapter in Adapters)
             {
+                if (adapter.Key is "Scarif")
+                    continue;
+
                 yield return new ScarifApp
                 {
                     Name = adapter.Key,
@@ -62,10 +72,41 @@ namespace Scarif.Server.Server.Persistence
             }
         }
 
-        public void InsertLog(LogMessage message)
+        public bool InsertLog(LogMessage message)
         {
+            var createdNewApp = false;
+            if (!Adapters.ContainsKey(message.App))
+            {
+                // Received log from new app
+                var appUrl = AppManager.AppUrlFromName(message.App);
+                var newAdapter = SQLiteAdapter.From(appUrl);
+                newAdapter.CreateNewApp(message.App);
+                Adapters.Add(message.App, newAdapter);
+                createdNewApp = true;
+            }
+
             var adapter = Adapters.FirstOrDefault(a => a.Key.Equals(message.App)).Value;
             adapter.InsertLog(message);
+            return createdNewApp;
+        }
+
+        public void InsertInternalLog(LogMessage message)
+        {
+            var adapter = Adapters["Scarif"];
+            adapter.InsertLog(message);
+        }
+
+        public void InsertInternalLog(string component, string severity, string message)
+        {
+            var proto = new LogMessage
+            {
+                App = "Scarif",
+                Component = component,
+                Severity = severity,
+                Timestamp = Timestamp.FromDateTime(DateTime.UtcNow),
+                Message = message
+            };
+            InsertInternalLog(proto);
         }
     }
 }

@@ -27,8 +27,38 @@ namespace Scarif.Server.Server.Core
         internal static SQLiteAdapter From(string file)
         {
             var query = $"Data Source = {Path.Combine("ScarifApps", $"{file}.scarif")}";
-            Console.WriteLine($"Running SQLite from {query}");
             return new SQLiteAdapter(query, file);
+        }
+
+        internal static SQLiteAdapter CreateInternalAdapter()
+        {
+            var file = Path.Combine("ScarifApps", $"Internal.Logs.scarif");
+            var query = $"Data Source = {file}";
+
+            if (!File.Exists(file))
+            {
+                // Create new internal log file
+                var sqlite = new SqliteConnection(query);
+                sqlite.Open();
+
+                // Create the system metadata table
+                var tblSystem = sqlite.CreateCommand();
+                tblSystem.CommandText = "CREATE TABLE Scarif (Key VARCHAR(128) PRIMARY KEY, Value VARCHAR(256))";
+                tblSystem.ExecuteNonQuery();
+
+                var tblInsertApp = sqlite.CreateCommand();
+                tblInsertApp.CommandText = $"INSERT INTO Scarif (Key, Value) VALUES ('AppName', 'Scarif')";
+                tblInsertApp.ExecuteNonQuery();
+
+                // Create the logs table
+                var tblLogs = sqlite.CreateCommand();
+                tblLogs.CommandText = "CREATE TABLE Logs (App VARCHAR(256), Component VARCHAR(256), Severity VARCHAR(64), Timestamp TEXT, Message VARCHAR(4096))";
+                tblLogs.ExecuteNonQuery();
+
+                sqlite.Close();
+            }
+
+            return new SQLiteAdapter(query, "scarif");
         }
 
         public void Dispose()

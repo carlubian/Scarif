@@ -11,7 +11,9 @@ namespace Scarif.Server.Server.Persistence
     {
         IEnumerable<ScarifApp> GetAllApps();
         string AppNameFromUrl(string appUrl);
-        void InsertLog(LogMessage message);
+        bool InsertLog(LogMessage message);
         IEnumerable<LogMessage> AllLogsForApp(string appName);
+        void InsertInternalLog(LogMessage message);
+        void InsertInternalLog(string component, string severity, string message);
     }
 }

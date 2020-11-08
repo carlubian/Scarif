@@ -12,14 +12,21 @@ namespace Scarif.Server.Server.Hubs
 {
     public class ScarifHub : Hub
     {
-        private static IPersistence Persistence = new SQLitePersistence();
+        internal static IPersistence Persistence = new SQLitePersistence();
 
         private static IDictionary<string, string> OnlineSources = new Dictionary<string, string>();
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
             if (OnlineSources.ContainsKey(Context.ConnectionId))
+            {
+                Persistence.InsertInternalLog("ScarifHub:OnDisconnectedAsync", "Info", $"Disconnected source {Context.ConnectionId} for App {OnlineSources[Context.ConnectionId]}");
                 OnlineSources.Remove(Context.ConnectionId);
+            }
+            else
+            {
+                Persistence.InsertInternalLog("ScarifHub:OnDisconnectedAsync", "Warning", $"Log source {Context.ConnectionId} disconnected wothout a registered app.");
+            }
 
             Clients.All.SendAsync("UpdateOnlineSources", OnlineSources);
             return base.OnDisconnectedAsync(exception);
@@ -72,7 +79,7 @@ namespace Scarif.Server.Server.Hubs
         /// <param name="appName"></param>
         public void ReportNewSource(string appName)
         {
-            Console.WriteLine($"Connected source {Context.ConnectionId} for App {appName}");
+            Persistence.InsertInternalLog("ScarifHub:ReportNewSource", "Trace", $"Connected source {Context.ConnectionId} for App {appName}");
             OnlineSources.Add(Context.ConnectionId, appName);
             Clients.All.SendAsync("UpdateOnlineSources", OnlineSources);
         }
@@ -86,7 +93,8 @@ namespace Scarif.Server.Server.Hubs
         {
             var message = LogMessage.Parser.ParseFrom(ByteString.FromBase64(logBase64));
 
-            Persistence.InsertLog(message);
+            if (Persistence.InsertLog(message))
+                Clients.All.SendAsync("NotifyNewAppCreated");
             Clients.All.SendAsync("NotifyIncomingLog", message.App);
         }
     }
