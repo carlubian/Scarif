@@ -67,9 +67,9 @@ namespace Scarif.Server.Server.Hubs
         /// </summary>
         /// <param name="appName"></param>
         /// <returns></returns>
-        public IEnumerable<LogMessage> RequestAppLogs(string appName)
+        public IEnumerable<LogMessage> RequestAppLogs(string appName, bool[] severities)
         {
-            return Persistence.AllLogsForApp(appName);
+            return Persistence.AllLogsForApp(appName, severities);
         }
 
         /// <summary>

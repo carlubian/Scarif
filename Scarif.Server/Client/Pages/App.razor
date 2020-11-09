@@ -10,6 +10,43 @@
 
 <p>These are the recorded logs for the @AppName App.</p>
 
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-1" />
+        <div class="col-4">
+
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="checkTrace"
+                       checked="@checkedTrace" @onchange="_ => SeverityChanged(nameof(checkedTrace))">
+                <label class="form-check-label" for="checkTrace">Trace</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="checkInfo"
+                       checked="@checkedInfo" @onchange="_ => SeverityChanged(nameof(checkedInfo))">
+                <label class="form-check-label" for="checkInfo">Info</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="checkWarning"
+                       checked="@checkedWarning" @onchange="_ => SeverityChanged(nameof(checkedWarning))">
+                <label class="form-check-label" for="checkWarning">Warning</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="checkError"
+                       checked="@checkedError" @onchange="_ => SeverityChanged(nameof(checkedError))">
+                <label class="form-check-label" for="checkError">Error</label>
+            </div>
+
+        </div>
+        <div class="col-2" />
+        <div class="col-4">
+
+            
+
+        </div>
+        <div class="col-1" />
+    </div>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -38,6 +75,11 @@
     public string AppName;
     public string AppUrl;
 
+    public bool checkedTrace = false;
+    public bool checkedInfo = true;
+    public bool checkedWarning = true;
+    public bool checkedError = true;
+
     public IEnumerable<LogMessage> Logs = new List<LogMessage>();
 
     protected override async Task OnInitializedAsync()
@@ -57,7 +99,8 @@
 
     public async void PopulateLogs()
     {
-        Logs = await SignalR.InvokeAsync<IEnumerable<LogMessage>>("RequestAppLogs", AppName);
+        var severities = new[] { checkedTrace, checkedInfo, checkedWarning, checkedError };
+        Logs = await SignalR.InvokeAsync<IEnumerable<LogMessage>>("RequestAppLogs", AppName, severities);
         StateHasChanged();
     }
 
@@ -92,6 +135,20 @@
             default:
                 return "badge badge-light";
         }
+    }
+
+    public void SeverityChanged(string sevType)
+    {
+        if (sevType.Equals(nameof(checkedTrace)))
+            checkedTrace = !checkedTrace;
+        if (sevType.Equals(nameof(checkedInfo)))
+            checkedInfo = !checkedInfo;
+        if (sevType.Equals(nameof(checkedWarning)))
+            checkedWarning = !checkedWarning;
+        if (sevType.Equals(nameof(checkedError)))
+            checkedError = !checkedError;
+
+        PopulateLogs();
     }
 
     /// <summary>

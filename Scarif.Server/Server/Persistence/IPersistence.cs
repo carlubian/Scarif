@@ -12,7 +12,7 @@ namespace Scarif.Server.Server.Persistence
         IEnumerable<ScarifApp> GetAllApps();
         string AppNameFromUrl(string appUrl);
         bool InsertLog(LogMessage message);
-        IEnumerable<LogMessage> AllLogsForApp(string appName);
+        IEnumerable<LogMessage> AllLogsForApp(string appName, bool[] severities);
         void InsertInternalLog(LogMessage message);
         void InsertInternalLog(string component, string severity, string message);
     }

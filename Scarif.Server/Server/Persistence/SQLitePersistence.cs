@@ -39,7 +39,7 @@ namespace Scarif.Server.Server.Persistence
             }
         }
 
-        public IEnumerable<LogMessage> AllLogsForApp(string appName)
+        public IEnumerable<LogMessage> AllLogsForApp(string appName, bool[] severities)
         {
             if (!Adapters.ContainsKey(appName))
             {
@@ -47,7 +47,7 @@ namespace Scarif.Server.Server.Persistence
                 return Enumerable.Empty<LogMessage>();
             }
 
-            return Adapters[appName].SelectAllLogs();
+            return Adapters[appName].SelectAllLogs(severities);
         }
 
         public string AppNameFromUrl(string appUrl)

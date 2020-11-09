@@ -64,7 +64,7 @@ namespace Scarif.Server.Server.Persistence
             return false;
         }
 
-        public IEnumerable<LogMessage> AllLogsForApp(string appName)
+        public IEnumerable<LogMessage> AllLogsForApp(string appName, bool[] severities)
         {
             if (_Storage.ContainsKey(appName))
                 return _Storage[appName];

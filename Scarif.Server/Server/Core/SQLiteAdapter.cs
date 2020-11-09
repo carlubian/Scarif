@@ -91,10 +91,28 @@ namespace Scarif.Server.Server.Core
             return tblSelect.ExecuteScalar().ToString();
         }
 
-        internal IEnumerable<LogMessage> SelectAllLogs()
+        internal IEnumerable<LogMessage> SelectAllLogs(bool[] severities)
         {
+            // Modify command for the required severities
+            var cmd = "SELECT App, Component, Severity, Timestamp, Message FROM Logs";
+            if (severities.Any())
+                cmd += " WHERE ";
+            if (severities[0])
+                cmd += "Severity = 'Trace' OR ";
+            if (severities[1])
+                cmd += "Severity = 'Info' OR ";
+            if (severities[2])
+                cmd += "Severity = 'Warning' OR ";
+            if (severities[3])
+                cmd += "Severity = 'Error' OR ";
+            if (severities.Any())
+                cmd = cmd.Remove(cmd.Length - 3);
+            cmd += " ORDER BY Timestamp DESC LIMIT 100";
+
+            Console.WriteLine(cmd);
+
             var tblSelect = SQLite.CreateCommand();
-            tblSelect.CommandText = "SELECT App, Component, Severity, Timestamp, Message FROM Logs ORDER BY Timestamp DESC LIMIT 100";
+            tblSelect.CommandText = cmd;
             var reader = tblSelect.ExecuteReader();
 
             while(reader.Read())
