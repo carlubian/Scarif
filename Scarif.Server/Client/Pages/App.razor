@@ -107,6 +107,9 @@
     async void HandleLocationChanged(object sender, LocationChangedEventArgs e)
     {
         await ParseQueryString();
+        if (AppUrl is "" || AppUrl is null)
+            return;
+
         Logs = new List<LogMessage>();
         PopulateLogs();
         Update.Clear(AppName);
@@ -158,6 +161,8 @@
     private async Task ParseQueryString()
     {
         NavManager.TryGetQueryString<string>("id", out AppUrl);
+        if (AppUrl is "" || AppUrl is null)
+            return;
         AppName = await SignalR.InvokeAsync<string>("AppNameFromUrl", AppUrl);
     }
 

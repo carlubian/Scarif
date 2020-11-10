@@ -8,7 +8,7 @@ namespace Scarif.Source.Test
         {
             var logSource = LogSource.Builder
                 .UseSignalR("http://localhost:8585")
-                .SetAppName("Test")
+                .SetAppName("Very long app name")
                 .Build();
 
             logSource.Info("SourceTest:Program:Main", "Info message from source test.");
