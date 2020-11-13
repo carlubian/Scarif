@@ -14,7 +14,7 @@ namespace Scarif.Server.Server.Hubs
     {
         internal static IPersistence Persistence = new SQLitePersistence();
 
-        private static IDictionary<string, string> OnlineSources = new Dictionary<string, string>();
+        private static readonly IDictionary<string, string> OnlineSources = new Dictionary<string, string>();
 
         public override Task OnDisconnectedAsync(Exception exception)
         {

@@ -16,7 +16,9 @@ namespace Scarif.Source
 
         private HubConnection SignalR;
 
+#pragma warning disable CS8618 // SignalR will be initialized by ConnectSignalR()
         internal LogSource(string endpoint, string app)
+#pragma warning restore CS8618 // 
         {
             Endpoint = endpoint;
             App = app;

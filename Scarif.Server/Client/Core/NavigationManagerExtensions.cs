@@ -9,7 +9,7 @@ namespace Scarif.Server.Client.Core
 {
     public static class NavigationManagerExtensions
     {
-        public static bool TryGetQueryString<T>(this NavigationManager navManager, string key, out T value)
+        public static bool TryGetQueryString<T>(this NavigationManager navManager, string key, out T? value) where T : class
         {
             var uri = navManager.ToAbsoluteUri(navManager.Uri);
 

@@ -10,8 +10,8 @@ namespace Scarif.Server.Client.Core
     public class UpdateService
     {
         public IDictionary<string, int> ForApp = new Dictionary<string, int>();
-        public string ActiveApp;
-        public event UpdateEventHandler Update;
+        public string? ActiveApp;
+        public event UpdateEventHandler? Update;
 
         public void ReceiveLog(string app)
         {
@@ -26,9 +26,9 @@ namespace Scarif.Server.Client.Core
             Update?.Invoke();
         }
 
-        public void Clear(string app)
+        public void Clear(string? app)
         {
-            if (ForApp.ContainsKey(app))
+            if (app is not null && ForApp.ContainsKey(app))
                 ForApp.Remove(app);
 
             Update?.Invoke();

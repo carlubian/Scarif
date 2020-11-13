@@ -6,8 +6,8 @@ namespace Scarif.Source.Builder
 {
     public class LogSourceBuilder
     {
-        private string Endpoint;
-        private string App;
+        private string Endpoint = "localhost";
+        private string App = "Default app";
 
         public LogSourceBuilder UseSignalR(string endpoint)
         {

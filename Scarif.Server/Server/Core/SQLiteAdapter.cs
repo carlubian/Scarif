@@ -14,7 +14,7 @@ namespace Scarif.Server.Server.Core
 {
     internal class SQLiteAdapter : IDisposable
     {
-        private SqliteConnection SQLite;
+        private readonly SqliteConnection SQLite;
         internal string appUrl;
 
         private SQLiteAdapter(string connStr, string appUrl)
@@ -88,7 +88,7 @@ namespace Scarif.Server.Server.Core
         {
             var tblSelect = SQLite.CreateCommand();
             tblSelect.CommandText = "SELECT Value FROM Scarif WHERE Key = 'AppName'";
-            return tblSelect.ExecuteScalar().ToString();
+            return tblSelect.ExecuteScalar().ToString() ?? "[Unknown App]";
         }
 
         internal IEnumerable<LogMessage> SelectAllLogs(bool[] severities)

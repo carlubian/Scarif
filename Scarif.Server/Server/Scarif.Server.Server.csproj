@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Nullable>enable</Nullable>
     <AssemblyName>Scarif.Server</AssemblyName>
     <UserSecretsId>cf3af68a-6ed3-4348-98b4-f92f139ed181</UserSecretsId>
   </PropertyGroup>
