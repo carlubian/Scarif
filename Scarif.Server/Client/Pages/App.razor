@@ -40,14 +40,19 @@
         <div class="col-2" />
         <div class="col-4">
 
+            <form class="form-inline" onsubmit="return false;">
+                <input type="text" class="form-control mb-2 mr-sm-2" id="formComponent"
+                       @bind="componentFilter" placeholder="Filter component name" />
+                <button type="button" class="btn btn-primary mb-2"
+                        @onclick="PopulateLogs">Filter</button>
+            </form>
             
-
         </div>
         <div class="col-1" />
     </div>
 </div>
 
-<table class="table">
+<table class="table table-hover">
     <thead>
         <tr>
             <th>Component</th>
@@ -60,7 +65,7 @@
         @foreach (var log in Logs)
         {
             <tr>
-                <td>@log.Component</td>
+                <td>@log.Component.Replace(":", " > ")</td>
                 <td><span class="@BadgeClassFromSeverity(log.Severity)">@log.Severity</span></td>
                 <td>@log.Timestamp.ToDateTime().ToString("yyyy-MM-dd HH:mm:ss.fff")</td>
                 <td>@log.Message</td>
@@ -79,6 +84,7 @@
     public bool checkedInfo = true;
     public bool checkedWarning = true;
     public bool checkedError = true;
+    public string componentFilter = "";
 
     public IEnumerable<LogMessage> Logs = new List<LogMessage>();
 
@@ -100,7 +106,9 @@
     public async void PopulateLogs()
     {
         var severities = new[] { checkedTrace, checkedInfo, checkedWarning, checkedError };
-        Logs = await SignalR.InvokeAsync<IEnumerable<LogMessage>>("RequestAppLogs", AppName, severities);
+
+        Logs = await SignalR.InvokeAsync<IEnumerable<LogMessage>>("RequestAppLogs", AppName, severities, 
+            componentFilter.Trim().Equals("") ? null : componentFilter);
         StateHasChanged();
     }
 

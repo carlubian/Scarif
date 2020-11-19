@@ -91,12 +91,17 @@ namespace Scarif.Server.Server.Core
             return tblSelect.ExecuteScalar().ToString() ?? "[Unknown App]";
         }
 
-        internal IEnumerable<LogMessage> SelectAllLogs(bool[] severities)
+        internal IEnumerable<LogMessage> SelectAllLogs(bool[] severities, string? componentFilter)
         {
-            // Modify command for the required severities
+            var hasWhere = false;
+            if (severities.Any() || componentFilter != null)
+                hasWhere = true;
+
             var cmd = "SELECT App, Component, Severity, Timestamp, Message FROM Logs";
-            if (severities.Any())
+            if (hasWhere)
                 cmd += " WHERE ";
+            if (componentFilter != null)
+                cmd += $"Component LIKE '%{componentFilter}%' AND (";
             if (severities[0])
                 cmd += "Severity = 'Trace' OR ";
             if (severities[1])
@@ -107,7 +112,9 @@ namespace Scarif.Server.Server.Core
                 cmd += "Severity = 'Error' OR ";
             if (severities.Any())
                 cmd = cmd.Remove(cmd.Length - 3);
-            cmd += " ORDER BY Timestamp DESC LIMIT 100";
+            if (componentFilter != null)
+                cmd += ")";
+            cmd += " ORDER BY Timestamp DESC LIMIT 150";
 
             Console.WriteLine(cmd);
 
