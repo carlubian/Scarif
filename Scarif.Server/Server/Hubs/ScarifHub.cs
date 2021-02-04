@@ -12,20 +12,18 @@ namespace Scarif.Server.Server.Hubs
 {
     public class ScarifHub : Hub
     {
-        internal static IPersistence Persistence = new SQLitePersistence();
-
         private static readonly IDictionary<string, string> OnlineSources = new Dictionary<string, string>();
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
             if (OnlineSources.ContainsKey(Context.ConnectionId))
             {
-                Persistence.InsertInternalLog("ScarifHub:OnDisconnectedAsync", "Info", $"Disconnected source {Context.ConnectionId} for App {OnlineSources[Context.ConnectionId]}");
+                //Persistence.InsertInternalLog("ScarifHub:OnDisconnectedAsync", "Info", $"Disconnected source {Context.ConnectionId} for App {OnlineSources[Context.ConnectionId]}");
                 OnlineSources.Remove(Context.ConnectionId);
             }
             else
             {
-                Persistence.InsertInternalLog("ScarifHub:OnDisconnectedAsync", "Warning", $"Log source {Context.ConnectionId} disconnected wothout a registered app.");
+                //Persistence.InsertInternalLog("ScarifHub:OnDisconnectedAsync", "Warning", $"Log source {Context.ConnectionId} disconnected wothout a registered app.");
             }
 
             Clients.All.SendAsync("UpdateOnlineSources", OnlineSources);
@@ -36,19 +34,10 @@ namespace Scarif.Server.Server.Hubs
         /// Called from the client to get the list of apps.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<ScarifApp> GetAllApps()
+        public IEnumerable<App> GetAllApps()
         {
-            return Persistence.GetAllApps();
-        }
-
-        /// <summary>
-        /// Called from the client to convert AppUri to AppName
-        /// </summary>
-        /// <param name="appUrl"></param>
-        /// <returns></returns>
-        public string AppNameFromUrl(string appUrl)
-        {
-            return Persistence.AppNameFromUrl(appUrl);
+            var Scarif = new ScarifContext();
+            return Scarif.Apps;
         }
 
         /// <summary>
@@ -69,19 +58,31 @@ namespace Scarif.Server.Server.Hubs
         /// <returns></returns>
         public IEnumerable<LogMessage> RequestAppLogs(string appName, bool[] severities, string? componentFilter)
         {
-            return Persistence.AllLogsForApp(appName, severities, componentFilter);
+            return Enumerable.Empty<LogMessage>();// Persistence.AllLogsForApp(appName, severities, componentFilter);
         }
 
         /// <summary>
         /// Called from log sources when they connect to report
         /// that they are online.
         /// </summary>
-        /// <param name="appName"></param>
-        public void ReportNewSource(string appName)
+        /// <param name="appUrl"></param>
+        public void ReportNewSource(string appUrl)
         {
-            Persistence.InsertInternalLog("ScarifHub:ReportNewSource", "Trace", $"Connected source {Context.ConnectionId} for App {appName}");
-            OnlineSources.Add(Context.ConnectionId, appName);
+            //Persistence.InsertInternalLog("ScarifHub:ReportNewSource", "Trace", $"Connected source {Context.ConnectionId} for App {appUrl}");
+            OnlineSources.Add(Context.ConnectionId, appUrl);
             Clients.All.SendAsync("UpdateOnlineSources", OnlineSources);
+        }
+
+        /// <summary>
+        /// Called form log sources to register a new app
+        /// in the server. Can be called multiple times without
+        /// duplicating apps.
+        /// </summary>
+        /// <param name="appId"></param>
+        /// <param name="appName"></param>
+        public void ReceiveApp(string appId, string appName)
+        {
+            ScarifAdapter.InsertApp(appId, appName);
         }
 
         /// <summary>
@@ -92,9 +93,10 @@ namespace Scarif.Server.Server.Hubs
         public void ReceiveLog(string logBase64)
         {
             var message = LogMessage.Parser.ParseFrom(ByteString.FromBase64(logBase64));
+            ScarifAdapter.InsertLog(message);
 
-            if (Persistence.InsertLog(message))
-                Clients.All.SendAsync("NotifyNewAppCreated");
+            //if (Persistence.InsertLog(message))
+            //    Clients.All.SendAsync("NotifyNewAppCreated");
             Clients.All.SendAsync("NotifyIncomingLog", message.App);
         }
     }

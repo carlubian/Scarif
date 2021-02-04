@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scarif.Core", "Scarif.Core\Scarif.Core.csproj", "{28E052AB-BEFC-4DF9-9FB8-1E21EFA29A23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scarif.Core", "Scarif.Core\Scarif.Core.csproj", "{28E052AB-BEFC-4DF9-9FB8-1E21EFA29A23}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scarif.Server.Server", "Scarif.Server\Server\Scarif.Server.Server.csproj", "{3061767B-CA5D-47DC-B21E-C55B48E8FA34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scarif.Server.Server", "Scarif.Server\Server\Scarif.Server.Server.csproj", "{3061767B-CA5D-47DC-B21E-C55B48E8FA34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scarif.Server.Client", "Scarif.Server\Client\Scarif.Server.Client.csproj", "{DD49156E-345A-4342-8F50-467B931C6D73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scarif.Server.Client", "Scarif.Server\Client\Scarif.Server.Client.csproj", "{DD49156E-345A-4342-8F50-467B931C6D73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scarif.Source", "Scarif.Source\Scarif.Source.csproj", "{36B9B85F-5715-48ED-B2B0-C83DD8D556B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scarif.Source", "Scarif.Source\Scarif.Source.csproj", "{36B9B85F-5715-48ED-B2B0-C83DD8D556B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scarif.Source.Test", "Scarif.Source.Test\Scarif.Source.Test.csproj", "{E49909F7-9B36-4A63-AF81-68C158200DF5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.Scarif", "Serilog.Sinks.Scarif\Serilog.Sinks.Scarif.csproj", "{E4AB52C5-9668-4151-B0F9-688EF8B677F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{36B9B85F-5715-48ED-B2B0-C83DD8D556B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36B9B85F-5715-48ED-B2B0-C83DD8D556B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36B9B85F-5715-48ED-B2B0-C83DD8D556B4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E49909F7-9B36-4A63-AF81-68C158200DF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E49909F7-9B36-4A63-AF81-68C158200DF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E49909F7-9B36-4A63-AF81-68C158200DF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E49909F7-9B36-4A63-AF81-68C158200DF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4AB52C5-9668-4151-B0F9-688EF8B677F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4AB52C5-9668-4151-B0F9-688EF8B677F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4AB52C5-9668-4151-B0F9-688EF8B677F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4AB52C5-9668-4151-B0F9-688EF8B677F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

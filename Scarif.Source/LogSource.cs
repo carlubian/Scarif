@@ -1,10 +1,11 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.SignalR.Client;
-using Scarif.Core;
+using Scarif.Core.Model;
 using Scarif.Protobuf;
 using Scarif.Source.Builder;
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Scarif.Source
@@ -16,20 +17,33 @@ namespace Scarif.Source
 
         private HubConnection SignalR;
 
+        /// <summary>
+        /// Determines whether the Log Source is connected to
+        /// a valid endpoint. Only valid for SignalR sources.
+        /// </summary>
+        public bool IsConnected => SignalR is not null && SignalR.State is HubConnectionState.Connected;
+        /// <summary>
+        /// Determines whether this Log Source uses SignalR to
+        /// connect to the Scarif server.
+        /// </summary>
+        public readonly bool IsSignalR;
+
 #pragma warning disable CS8618 // SignalR will be initialized by ConnectSignalR()
-        internal LogSource(string endpoint, string app)
+        internal LogSource(string endpoint, string app, bool isSignalR)
 #pragma warning restore CS8618 // 
         {
             Endpoint = endpoint;
             App = app;
+            IsSignalR = isSignalR;
 
-            ConnectSignalR();
+            if (IsSignalR)
+                ConnectSignalR();
         }
 
         private void ConnectSignalR()
         {
             SignalR = new HubConnectionBuilder()
-                .WithUrl($"{Endpoint}/scarif")
+                .WithUrl($"{Endpoint}/scarifhub")
                 .Build();
             SignalR.StartAsync().Wait();
 
@@ -38,32 +52,43 @@ namespace Scarif.Source
 
         public static LogSourceBuilder Builder => new LogSourceBuilder();
 
-        public LogSourceInstance ForComponent(string component) => new LogSourceInstance(this, component);
-
-        internal void SendLog(string component, LogSeverity severity, string message)
+        public void SendLog(Log message)
         {
             var proto = new LogMessage
             {
                 App = App,
-                Component = component,
-                Severity = severity.ToString(),
+                Component = message.Component,
+                Severity = message.Severity,
                 Timestamp = Timestamp.FromDateTime(DateTime.UtcNow),
-                Message = message
+                Message = message.Message
             };
+            foreach (var prop in message.Properties)
+                proto.Properties.Add(new LogProperty
+                {
+                    Key = prop.Key,
+                    Value = prop.Value
+                });
+
             var base64 = proto.ToByteString().ToBase64();
 
-            if (SignalR is null || SignalR.State != HubConnectionState.Connected)
-                ConnectSignalR();
-
-            Parallel.Invoke(() => SignalR.InvokeAsync("ReceiveLog", base64).Wait());
+            DoSendLog(base64);
         }
 
-        public void Trace(string component, string message) => SendLog(component, LogSeverity.Trace, message);
+        private void DoSendLog(string base64)
+        {
+            if (IsSignalR && !IsConnected)
+                ConnectSignalR();
 
-        public void Info(string component, string message) => SendLog(component, LogSeverity.Info, message);
+            if (IsSignalR)
+                Parallel.Invoke(() => SignalR.InvokeAsync("ReceiveLog", base64).Wait());
+            else
+            {
+                // Use standard HTTP request
+                var Http = new HttpClient();
 
-        public void Warning(string component, string message) => SendLog(component, LogSeverity.Warning, message);
-
-        public void Error(string component, string message) => SendLog(component, LogSeverity.Error, message);
+                // TODO: Make POST request to endpoint
+                // with base64 in form data.
+            }
+        }
     }
 }

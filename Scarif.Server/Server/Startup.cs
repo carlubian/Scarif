@@ -68,7 +68,7 @@ namespace Scarif.Server.Server
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                endpoints.MapHub<ScarifHub>("/scarif");
+                endpoints.MapHub<ScarifHub>("/scarifhub");
                 endpoints.MapFallbackToFile("index.html");
             });
         }
