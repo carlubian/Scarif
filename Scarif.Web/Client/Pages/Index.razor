@@ -1,0 +1,84 @@
+﻿@page "/"
+
+@using Microsoft.AspNetCore.SignalR.Client;
+
+<h1>Scarif Log Server</h1>
+
+<p class="lead">Unified log server and bulk data visualization platform.</p>
+
+<p>Below you will find a list of all apps registered on Scarif. Apps are
+    registered automatically by the log sources when they connect to the
+    server, and can be modified or deleted from the Settings page.</p>
+
+<!-- TODO Fill dinamically -->
+
+<div class="row">
+    <div class="col-3">
+        <div class="card border-secondary mb-3" style="max-width: 18rem;">
+            <div class="card-header">/sarah-covid</div>
+            <div class="card-body text-secondary">
+                <h5 class="card-title">SARAH for Covid</h5>
+                <p class="card-text"><span class="badge bg-danger">5</span> new events.</p>
+                <p class="card-text"><span class="badge bg-success">1</span> online sources.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-3">
+        <div class="card border-secondary mb-3" style="max-width: 18rem;">
+            <div class="card-header">/sarah-hangar</div>
+            <div class="card-body text-secondary">
+                <h5 class="card-title">SARAH for Hangar</h5>
+                <p class="card-text"><span class="badge bg-danger">22</span> new events.</p>
+                <p class="card-text"><span class="badge bg-success">3</span> online sources.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-3">
+        <div class="card border-secondary mb-3" style="max-width: 18rem;">
+            <div class="card-header">/lora2redis</div>
+            <div class="card-body text-secondary">
+                <h5 class="card-title">Lora2Redis</h5>
+                <p class="card-text"><span class="badge bg-danger">17</span> new events.</p>
+                <p class="card-text"><span class="badge bg-success">2</span> online sources.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-3">
+        <div class="card border-secondary mb-3" style="max-width: 18rem;">
+            <div class="card-header">/redis2server</div>
+            <div class="card-body text-secondary">
+                <h5 class="card-title">Redis2Server</h5>
+                <p class="card-text"><span class="badge bg-danger">5</span> new events.</p>
+                <p class="card-text"><span class="badge bg-success">0</span> online sources.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-3">
+        <div class="card border-secondary mb-3" style="max-width: 18rem;">
+            <div class="card-header">/mqtt2signalr</div>
+            <div class="card-body text-secondary">
+                <h5 class="card-title">MQTT2SignalR</h5>
+                <p class="card-text"><span class="badge bg-danger">6</span> new events.</p>
+                <p class="card-text"><span class="badge bg-success">2</span> online sources.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code
+{ 
+    protected override async Task OnInitializedAsync()
+    {
+        var hub = new HubConnectionBuilder()
+            .WithUrl("http://localhost:8585/scarif")
+            .Build();
+
+        await hub.StartAsync();
+        await hub.SendAsync("Test", "Test message");
+    }
+}
