@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scarif.Source", "Scarif.Sou
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serilog.Sinks.Scarif", "Serilog.Sinks.Scarif\Serilog.Sinks.Scarif.csproj", "{E4AB52C5-9668-4151-B0F9-688EF8B677F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scarif.Web.Server", "Scarif.Web\Server\Scarif.Web.Server.csproj", "{442C79E9-1C6D-4630-96A2-254AB776E52C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scarif.Web.Server", "Scarif.Web\Server\Scarif.Web.Server.csproj", "{442C79E9-1C6D-4630-96A2-254AB776E52C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scarif.Web.Client", "Scarif.Web\Client\Scarif.Web.Client.csproj", "{A36F5F5B-CDFC-4509-9F8A-16EF2427E2D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scarif.Web.Client", "Scarif.Web\Client\Scarif.Web.Client.csproj", "{A36F5F5B-CDFC-4509-9F8A-16EF2427E2D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScarifV2Test", "ScarifV2Test\ScarifV2Test.csproj", "{B0764CD3-7E13-41A7-AE11-E529CE063F02}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{A36F5F5B-CDFC-4509-9F8A-16EF2427E2D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A36F5F5B-CDFC-4509-9F8A-16EF2427E2D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A36F5F5B-CDFC-4509-9F8A-16EF2427E2D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0764CD3-7E13-41A7-AE11-E529CE063F02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0764CD3-7E13-41A7-AE11-E529CE063F02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0764CD3-7E13-41A7-AE11-E529CE063F02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0764CD3-7E13-41A7-AE11-E529CE063F02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
