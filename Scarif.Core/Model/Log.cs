@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Scarif.Core.Model
 {
     public class Log
     {
+        [JsonIgnore]
         public App App { get; set; }
         [Key]
         public long LogId { get; set; }

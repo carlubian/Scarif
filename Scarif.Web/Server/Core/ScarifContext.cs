@@ -10,6 +10,7 @@ namespace Scarif.Web.Server.Core
     public class ScarifContext : DbContext
     {
         public DbSet<App> Apps { get; set; }
+        public DbSet<Log> Log { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

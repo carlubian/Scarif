@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Scarif.Core.Model;
 using Scarif.Web.Server.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Scarif.Web.Server.Hubs
 {
@@ -19,6 +19,26 @@ namespace Scarif.Web.Server.Hubs
         {
             var Scarif = new ScarifContext();
             return Scarif.Apps;
+        }
+
+        public IEnumerable<Log> LogsForApp(string AppId)
+        {
+            var Scarif = new ScarifContext();
+            return Scarif.Apps
+                .Include(a => a.Logs)
+                .ThenInclude(l => l.Properties)
+                .FirstOrDefault(a => a.AppId.Equals(AppId))?
+                .Logs?
+                .OrderByDescending(l => l.Timestamp)
+                ?? Enumerable.Empty<Log>();
+        }
+
+        public string AppNameFromId(string AppId)
+        {
+            var Scarif = new ScarifContext();
+            return Scarif.Apps
+                .FirstOrDefault(a => a.AppId.Equals(AppId))?
+                .AppName ?? "Unknown app";
         }
     }
 }

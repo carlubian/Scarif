@@ -1,4 +1,6 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿@inject NavigationManager NavigationManager
+
+<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand mx-2" href="">Scarif</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
@@ -18,9 +20,9 @@
             </NavLink>
         </li>
         <li class="nav-item px-3">
-            <NavLink class="nav-link" href="">
+            <a class="nav-link" @onclick="@(() => Refresh())">
                 <span class="oi oi-reload" aria-hidden="true"></span> Reload
-            </NavLink>
+            </a>
         </li>
     </ul>
 </div>
@@ -33,5 +35,10 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    void Refresh()
+    {
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
     }
 }

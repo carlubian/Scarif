@@ -1,12 +1,11 @@
 ﻿using Google.Protobuf;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Scarif.Core.Model;
 using Scarif.Protobuf;
 using Scarif.Web.Server.Core;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Scarif.Web.Server.Controllers
 {
@@ -19,6 +18,19 @@ namespace Scarif.Web.Server.Controllers
         {
             var Scarif = new ScarifContext();
             return Scarif.Apps;
+        }
+
+        [HttpGet("logs")]
+        public IEnumerable<Log> LogsForApp([FromQuery]string AppId)
+        {
+            var Scarif = new ScarifContext();
+            return Scarif.Apps
+                .Include(a => a.Logs)
+                .ThenInclude(l => l.Properties)
+                .FirstOrDefault(a => a.AppId.Equals(AppId))?
+                .Logs?
+                .OrderByDescending(l => l.Timestamp)
+                ?? Enumerable.Empty<Log>();
         }
 
         [HttpPut]
