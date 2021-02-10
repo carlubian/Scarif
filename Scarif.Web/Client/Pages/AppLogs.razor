@@ -1,0 +1,19 @@
+﻿@page "/appLogs"
+
+@using Microsoft.AspNetCore.WebUtilities
+@inject NavigationManager NavigationManager
+
+<p>App: @AppId</p>
+
+@code {
+    string AppId;
+
+    protected override Task OnInitializedAsync()
+    {
+        var query = new Uri(NavigationManager.Uri).Query;
+        if (QueryHelpers.ParseQuery(query).TryGetValue("AppId", out var appId))
+            AppId = appId;
+
+        return Task.CompletedTask;
+    }
+}

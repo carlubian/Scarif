@@ -14,6 +14,13 @@ namespace Scarif.Web.Server.Controllers
     [Route("[Controller]")]
     public class ApiController
     {
+        [HttpGet]
+        public IEnumerable<App> GetAllApps()
+        {
+            var Scarif = new ScarifContext();
+            return Scarif.Apps;
+        }
+
         [HttpPut]
         public void PutNewApp([FromForm]string appName, [FromForm]string appUrl)
         {

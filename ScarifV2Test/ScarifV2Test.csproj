@@ -6,7 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Scarif.Core\Scarif.Core.csproj" />
+    <ProjectReference Include="..\Serilog.Sinks.Scarif\Serilog.Sinks.Scarif.csproj" />
   </ItemGroup>
 
 </Project>

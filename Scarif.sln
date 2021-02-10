@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scarif.Web.Server", "Scarif
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scarif.Web.Client", "Scarif.Web\Client\Scarif.Web.Client.csproj", "{A36F5F5B-CDFC-4509-9F8A-16EF2427E2D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScarifV2Test", "ScarifV2Test\ScarifV2Test.csproj", "{B0764CD3-7E13-41A7-AE11-E529CE063F02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScarifV2Test", "ScarifV2Test\ScarifV2Test.csproj", "{B0764CD3-7E13-41A7-AE11-E529CE063F02}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

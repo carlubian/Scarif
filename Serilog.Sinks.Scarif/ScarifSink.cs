@@ -1,7 +1,10 @@
-﻿using Scarif.Source;
+﻿using Google.Protobuf.WellKnownTypes;
+using Scarif.Core;
+using Scarif.Protobuf;
+using Scarif.Source;
+using Scarif.Source.Builder;
 using Serilog.Core;
 using Serilog.Events;
-using System;
 
 namespace Serilog.Sinks.Scarif
 {
@@ -15,34 +18,30 @@ namespace Serilog.Sinks.Scarif
         {
             Endpoint = endpoint;
             AppName = appName;
-
-            Connect();
-        }
-
-        private void Connect()
-        {
-            Scarif = LogSource.Builder
-                .UseSignalR(Endpoint)
+            Scarif = new LogSourceBuilder()
+                .UseHttp(Endpoint)
                 .SetAppName(AppName)
                 .Build();
         }
 
         public void Emit(LogEvent logEvent)
         {
-            /**
-             * if (Scarif.IsConnected)
-             * {
-             *      switch (logEvent.Level)
-             *      {
-             *          ...
-             *      }
-             * }
-             * else
-             * {
-             *      
-             * }
-             */
-            throw new NotImplementedException();
+            var Log = new LogMessage
+            {
+                App = AppManager.AppUrlFromName(AppName),
+                Component = logEvent.Properties.ContainsKey("Component") ? logEvent.Properties["Component"].ToString() : "Unknown",
+                Severity = logEvent.Level.ToString(),
+                Timestamp = Timestamp.FromDateTime(logEvent.Timestamp.UtcDateTime),
+                Message = logEvent.MessageTemplate.ToString()
+            };
+            foreach (var prop in logEvent.Properties)
+                Log.Properties.Add(new LogProperty
+                {
+                    Key = prop.Key,
+                    Value = prop.Value.ToString()
+                });
+
+            Scarif.SendLog(Log);
         }
     }
 }

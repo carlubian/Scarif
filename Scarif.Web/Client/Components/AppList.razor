@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager NavigationManager
+
+<div class="row">
+    @foreach (var app in Apps)
+    {
+        <div class="col-3">
+            <div class="card border-secondary mb-3" style="max-width: 18rem;">
+                <div class="card-header">/@app.AppId</div>
+                <div class="card-body text-secondary">
+                    <h5 class="card-title">@app.AppName</h5>
+                    <p>Press the button below to access logs sent
+                    by this app.</p>
+                    <a class="btn btn-primary mx-4 my-4" href="@($"/appLogs?appId={app.AppId}")">
+                        View logs
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    HubConnection SignalR;
+    IEnumerable<Scarif.Core.Model.App> Apps = Enumerable.Empty<Scarif.Core.Model.App>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        SignalR = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/scarif"))
+            .Build();
+
+        await SignalR.StartAsync();
+        Apps = await SignalR.InvokeAsync<IEnumerable<Scarif.Core.Model.App>>("GetApps");
+        StateHasChanged();
+    }
+}
