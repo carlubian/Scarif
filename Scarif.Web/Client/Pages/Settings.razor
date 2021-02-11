@@ -1,0 +1,60 @@
+﻿@page "/settings"
+
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager NavigationManager
+
+<h1>Settings</h1>
+
+<p class="lead">This page allows you to delete apps.</p>
+
+<p>
+    Deleting an app will permanently remove it and all logs coming
+    from it.
+</p>
+<p>Please allow a few seconds to populate the view when first navigating.</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>App name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var app in Apps)
+        {
+            <tr>
+                <td>@app.AppName (@app.AppId)</td>
+                <td>
+                    <button class="btn btn-danger" @onclick="_ => DeleteApp(app.AppId)">DELETE</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    IEnumerable<Scarif.Core.Model.App> Apps = Enumerable.Empty<Scarif.Core.Model.App>();
+    HubConnection SignalR;
+
+    protected override async Task OnInitializedAsync()
+    {
+        SignalR = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/scarif"))
+            .Build();
+
+        await SignalR.StartAsync();
+
+        Apps = await SignalR.InvokeAsync<IEnumerable<Scarif.Core.Model.App>>("GetApps");
+
+        StateHasChanged();
+    }
+
+    async void DeleteApp(string AppId)
+    {
+        await SignalR.InvokeAsync("DeleteApp", AppId);
+        Apps = await SignalR.InvokeAsync<IEnumerable<Scarif.Core.Model.App>>("GetApps");
+
+        StateHasChanged();
+    }
+}

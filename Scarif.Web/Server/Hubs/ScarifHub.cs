@@ -21,6 +21,14 @@ namespace Scarif.Web.Server.Hubs
             return Scarif.Apps;
         }
 
+        public void DeleteApp(string AppId)
+        {
+            var Scarif = new ScarifContext();
+            if (Scarif.Apps.Any(a => a.AppId.Equals(AppId)))
+                Scarif.Apps.Remove(Scarif.Apps.First(a => a.AppId.Equals(AppId)));
+            Scarif.SaveChanges();
+        }
+
         public IEnumerable<Log> LogsForApp(string AppId)
         {
             var Scarif = new ScarifContext();
