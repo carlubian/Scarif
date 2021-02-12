@@ -3,6 +3,7 @@
 @using Scarif.Core.Model
 @using Microsoft.AspNetCore.WebUtilities
 @using Microsoft.AspNetCore.SignalR.Client
+@using System.Threading
 @inject NavigationManager NavigationManager
 
 <h1>@AppName</h1>
@@ -43,6 +44,7 @@
     string AppName;
     IEnumerable<Log> Logs = Enumerable.Empty<Log>();
     HubConnection SignalR;
+    Timer QueryTimer;
 
     protected override async Task OnInitializedAsync()
     {
@@ -55,6 +57,11 @@
             .Build();
 
         await SignalR.StartAsync();
+        QueryTimer = new Timer(async _ => await QueryLogs(), null, 500, 5000);
+    }
+
+    async Task QueryLogs()
+    {
         AppName = await SignalR.InvokeAsync<string>("AppNameFromId", AppId);
         Logs = await SignalR.InvokeAsync<IEnumerable<Log>>("LogsForApp", AppId);
 

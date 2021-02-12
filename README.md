@@ -8,8 +8,27 @@ TODO Fill this section
 
 ## Requirements
 
-In order to deploy V2 of Scarif without modifications, you will need to have an instance of 
-[https://azure.microsoft.com/en-gb/services/postgresql](Azure Database for PostgreSQL) or other compatible and accesible SQL database. This database will be used by Scarif to store all incoming logs.
+Scarif has the following requirements to function:
+
+* Server or app to deploy the Scarif Server. The tests have been made with an [Azure App Service](https://azure.microsoft.com/en-gb/services/app-service), but other web app providers should be compatible.
+* SQL Database accessible from the server. The tests have been made with an [Azure Database for PostgreSQL](https://azure.microsoft.com/en-gb/services/postgresql), but other database providers should be compatible with minimal code changes.
+
+## Configuration
+
+Prior to starting the server, you will need to specify the connection parameters for the database.
+To do so, create a <code>settings.conf</code> file in the same directory as the server executable,
+and put the following content inside it:
+
+```ini
+[Postgres]
+Server = <your-server>.postgres.database.azure.com
+Database = <db-name>
+Port = 5432
+User = <user-name>
+Password = <password>
+```
+
+Make sure to replace the placeholder values with correct parameters.
 
 ## Components
 

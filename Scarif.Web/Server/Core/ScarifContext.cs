@@ -1,9 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ConfigAdapter.Ini;
+using Microsoft.EntityFrameworkCore;
 using Scarif.Core.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Scarif.Web.Server.Core
 {
@@ -14,7 +11,14 @@ namespace Scarif.Web.Server.Core
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Server=scarif-logs.postgres.database.azure.com;Database=scarif;Port=5432;User Id=scarif@scarif-logs;Password=&$p85wPR$Zh9awws@8jpK4ps;Ssl Mode=Require;");
+            var Config = IniConfig.From("settings.conf");
+            var Server = Config.Read("Postgres:Server");
+            var Database = Config.Read("Postgres:Database");
+            var Port = Config.Read("Postgres:Port");
+            var User = Config.Read("Postgres:User");
+            var Password = Config.Read("Postgres:Password");
+
+            optionsBuilder.UseNpgsql($"Server={Server};Database={Database};Port={Port};User Id={User};Password={Password};Ssl Mode=Require;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

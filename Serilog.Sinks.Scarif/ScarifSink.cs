@@ -32,7 +32,7 @@ namespace Serilog.Sinks.Scarif
                 Component = logEvent.Properties.ContainsKey("Component") ? logEvent.Properties["Component"].ToString() : "Unknown",
                 Severity = logEvent.Level.ToString(),
                 Timestamp = Timestamp.FromDateTime(logEvent.Timestamp.UtcDateTime),
-                Message = logEvent.MessageTemplate.ToString()
+                Message = logEvent.RenderMessage()
             };
             foreach (var prop in logEvent.Properties)
                 Log.Properties.Add(new LogProperty
