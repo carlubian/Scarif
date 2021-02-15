@@ -3,6 +3,15 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <Id>Scarif.Core</Id>
+    <Title>Scarif.Core</Title>
+    <Authors>carlubian</Authors>
+    <Description>Common classes and dependencies for Scarif.</Description>
+    <PackageProjectUrl>https://github.com/carlubian/scarif</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/carlubian/scarif</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Version>2.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

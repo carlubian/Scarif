@@ -1,0 +1,86 @@
+﻿@page "/appLogs"
+
+@using Scarif.Core.Model
+@using Microsoft.AspNetCore.WebUtilities
+@using Microsoft.AspNetCore.SignalR.Client
+@using System.Threading
+@inject NavigationManager NavigationManager
+
+<h1>@AppName</h1>
+
+<p class="lead">Here are the recorded logs for this app.</p>
+
+<p>
+    The log list below can be filtered using the corresponding
+    controls on the right side of the page. This view will refresh
+    automatically every few seconds.
+</p>
+<p>Please allow a few seconds to populate the view when first navigating.</p>
+
+<table class="table table-hover align-middle">
+    <thead>
+        <tr>
+            <th>Timestamp</th>
+            <th>Component</th>
+            <th>Severity</th>
+            <th>Message</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var log in Logs)
+        {
+            <tr class="@TrClassFromLog(log)">
+                <td>@log.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff")</td>
+                <td>@log.Component.Replace("\"", "").Replace(":", "\u1433")</td>
+                <td>@log.Severity</td>
+                <td>@log.Message</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    string AppId;
+    string AppName;
+    IEnumerable<Log> Logs = Enumerable.Empty<Log>();
+    HubConnection SignalR;
+    Timer QueryTimer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var query = new Uri(NavigationManager.Uri).Query;
+        if (QueryHelpers.ParseQuery(query).TryGetValue("AppId", out var appId))
+            AppId = appId;
+
+        SignalR = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/scarif"))
+            .Build();
+
+        await SignalR.StartAsync();
+        QueryTimer = new Timer(async _ => await QueryLogs(), null, 500, 5000);
+    }
+
+    async Task QueryLogs()
+    {
+        AppName = await SignalR.InvokeAsync<string>("AppNameFromId", AppId);
+        Logs = await SignalR.InvokeAsync<IEnumerable<Log>>("LogsForApp", AppId);
+
+        StateHasChanged();
+    }
+
+    string TrClassFromLog(Log log)
+    {
+        return log.Severity.ToLowerInvariant() switch
+        {
+            "debug" => "",
+            "trace" => "",
+            "verbose" => "",
+            "info" => "table-info",
+            "information" => "table-info",
+            "warning" => "table-warning",
+            "error" => "table-danger",
+            "fatal" => "table-danger",
+            _ => ""
+        };
+    }
+}

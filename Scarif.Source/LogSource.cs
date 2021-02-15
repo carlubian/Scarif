@@ -1,10 +1,9 @@
 ﻿using Google.Protobuf;
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.SignalR.Client;
-using Scarif.Core.Model;
+using Scarif.Core;
 using Scarif.Protobuf;
 using Scarif.Source.Builder;
-using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -13,7 +12,7 @@ namespace Scarif.Source
     public class LogSource
     {
         private readonly string Endpoint;
-        private readonly string App;
+        private readonly string AppName;
 
         private HubConnection SignalR;
 
@@ -33,7 +32,7 @@ namespace Scarif.Source
 #pragma warning restore CS8618 // 
         {
             Endpoint = endpoint;
-            App = app;
+            AppName = app;
             IsSignalR = isSignalR;
 
             if (IsSignalR)
@@ -47,30 +46,16 @@ namespace Scarif.Source
                 .Build();
             SignalR.StartAsync().Wait();
 
-            SignalR.InvokeAsync("ReportNewSource", App);
+            SignalR.InvokeAsync("ReportNewSource", AppName);
         }
 
         public static LogSourceBuilder Builder => new LogSourceBuilder();
 
-        public void SendLog(Log message)
+        public void SendLog(LogMessage message)
         {
-            var proto = new LogMessage
-            {
-                App = App,
-                Component = message.Component,
-                Severity = message.Severity,
-                Timestamp = Timestamp.FromDateTime(DateTime.UtcNow),
-                Message = message.Message
-            };
-            foreach (var prop in message.Properties)
-                proto.Properties.Add(new LogProperty
-                {
-                    Key = prop.Key,
-                    Value = prop.Value
-                });
+            var base64 = message.ToByteString().ToBase64();
 
-            var base64 = proto.ToByteString().ToBase64();
-
+            DoRegisterApp();
             DoSendLog(base64);
         }
 
@@ -86,9 +71,25 @@ namespace Scarif.Source
                 // Use standard HTTP request
                 var Http = new HttpClient();
 
-                // TODO: Make POST request to endpoint
+                // Make POST request to endpoint
                 // with base64 in form data.
+                var content = new Dictionary<string, string>()
+                {
+                    { "log", base64 }
+                };
+                Http.PostAsync($"{Endpoint}/api", new FormUrlEncodedContent(content)).Wait();
             }
+        }
+
+        private void DoRegisterApp()
+        {
+            var Http = new HttpClient();
+            var newApp = new Dictionary<string, string>()
+            {
+                { "appName", AppName },
+                { "appUrl", AppManager.AppUrlFromName(AppName) }
+            };
+            Http.PutAsync($"{Endpoint}/api", new FormUrlEncodedContent(newApp)).Wait();
         }
     }
 }

@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Scarif.Core.Model
 {
     public class Log
     {
-        public string AppId { get; set; }
+        [JsonIgnore]
         public App App { get; set; }
         [Key]
-        public Guid LogId { get; set; }
+        public long LogId { get; set; }
         public string Component { get; set; }
         public string Severity { get; set; }
         public DateTime Timestamp { get; set; }

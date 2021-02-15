@@ -3,10 +3,19 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <Id>Scarif.Source</Id>
+    <Title>Scarif.Source</Title>
+    <Authors>carlubian</Authors>
+    <Description>Library for apps that send logs to Scarif.</Description>
+    <PackageProjectUrl>https://github.com/carlubian/scarif</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/carlubian/scarif</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Version>2.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Scarif.Core\Scarif.Core.csproj" />
+    <PackageReference Include="Scarif.Core" Version="2.0.0" />
   </ItemGroup>
 
 </Project>

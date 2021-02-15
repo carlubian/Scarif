@@ -5,13 +5,13 @@ VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scarif.Core", "Scarif.Core\Scarif.Core.csproj", "{28E052AB-BEFC-4DF9-9FB8-1E21EFA29A23}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scarif.Server.Server", "Scarif.Server\Server\Scarif.Server.Server.csproj", "{3061767B-CA5D-47DC-B21E-C55B48E8FA34}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scarif.Server.Client", "Scarif.Server\Client\Scarif.Server.Client.csproj", "{DD49156E-345A-4342-8F50-467B931C6D73}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scarif.Source", "Scarif.Source\Scarif.Source.csproj", "{36B9B85F-5715-48ED-B2B0-C83DD8D556B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.Scarif", "Serilog.Sinks.Scarif\Serilog.Sinks.Scarif.csproj", "{E4AB52C5-9668-4151-B0F9-688EF8B677F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serilog.Sinks.Scarif", "Serilog.Sinks.Scarif\Serilog.Sinks.Scarif.csproj", "{E4AB52C5-9668-4151-B0F9-688EF8B677F4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scarif.Web.Server", "Scarif.Web\Server\Scarif.Web.Server.csproj", "{442C79E9-1C6D-4630-96A2-254AB776E52C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scarif.Web.Client", "Scarif.Web\Client\Scarif.Web.Client.csproj", "{A36F5F5B-CDFC-4509-9F8A-16EF2427E2D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,14 +23,6 @@ Global
 		{28E052AB-BEFC-4DF9-9FB8-1E21EFA29A23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28E052AB-BEFC-4DF9-9FB8-1E21EFA29A23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28E052AB-BEFC-4DF9-9FB8-1E21EFA29A23}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3061767B-CA5D-47DC-B21E-C55B48E8FA34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3061767B-CA5D-47DC-B21E-C55B48E8FA34}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3061767B-CA5D-47DC-B21E-C55B48E8FA34}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3061767B-CA5D-47DC-B21E-C55B48E8FA34}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DD49156E-345A-4342-8F50-467B931C6D73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DD49156E-345A-4342-8F50-467B931C6D73}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DD49156E-345A-4342-8F50-467B931C6D73}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DD49156E-345A-4342-8F50-467B931C6D73}.Release|Any CPU.Build.0 = Release|Any CPU
 		{36B9B85F-5715-48ED-B2B0-C83DD8D556B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{36B9B85F-5715-48ED-B2B0-C83DD8D556B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36B9B85F-5715-48ED-B2B0-C83DD8D556B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +31,14 @@ Global
 		{E4AB52C5-9668-4151-B0F9-688EF8B677F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4AB52C5-9668-4151-B0F9-688EF8B677F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4AB52C5-9668-4151-B0F9-688EF8B677F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{442C79E9-1C6D-4630-96A2-254AB776E52C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{442C79E9-1C6D-4630-96A2-254AB776E52C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{442C79E9-1C6D-4630-96A2-254AB776E52C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{442C79E9-1C6D-4630-96A2-254AB776E52C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A36F5F5B-CDFC-4509-9F8A-16EF2427E2D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A36F5F5B-CDFC-4509-9F8A-16EF2427E2D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A36F5F5B-CDFC-4509-9F8A-16EF2427E2D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A36F5F5B-CDFC-4509-9F8A-16EF2427E2D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
