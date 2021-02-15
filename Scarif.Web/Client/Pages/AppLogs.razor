@@ -17,7 +17,7 @@
 </p>
 <p>Please allow a few seconds to populate the view when first navigating.</p>
 
-<table class="table">
+<table class="table table-hover align-middle">
     <thead>
         <tr>
             <th>Timestamp</th>
@@ -29,9 +29,9 @@
     <tbody>
         @foreach (var log in Logs)
         {
-            <tr>
+            <tr class="@TrClassFromLog(log)">
                 <td>@log.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff")</td>
-                <td>@log.Component</td>
+                <td>@log.Component.Replace("\"", "").Replace(":", "\u1433")</td>
                 <td>@log.Severity</td>
                 <td>@log.Message</td>
             </tr>
@@ -66,5 +66,21 @@
         Logs = await SignalR.InvokeAsync<IEnumerable<Log>>("LogsForApp", AppId);
 
         StateHasChanged();
+    }
+
+    string TrClassFromLog(Log log)
+    {
+        return log.Severity.ToLowerInvariant() switch
+        {
+            "debug" => "",
+            "trace" => "",
+            "verbose" => "",
+            "info" => "table-info",
+            "information" => "table-info",
+            "warning" => "table-warning",
+            "error" => "table-danger",
+            "fatal" => "table-danger",
+            _ => ""
+        };
     }
 }
