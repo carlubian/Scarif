@@ -6,34 +6,44 @@
 @using System.Threading
 @inject NavigationManager NavigationManager
 
-<h1>@AppName</h1>
+<h2 class="text-xl md:text-4xl tracking-wide">@AppName</h2>
 
-<p class="lead">Here are the recorded logs for this app.</p>
-
-<p>
+<p class="tracking-wide text-lg">
     The log list below can be filtered using the corresponding
     controls on the right side of the page. This view will refresh
     automatically every few seconds.
 </p>
-<p>Please allow a few seconds to populate the view when first navigating.</p>
+<p class="tracking-wide text-gray-400">Please allow a few seconds to populate the view when first navigating.</p>
 
-<table class="table">
+<table class="table border-collapse w-full m-2 md:m-4">
     <thead>
-        <tr>
+        <tr class="border-b-2 border-yellow-600">
             <th>Timestamp</th>
             <th>Component</th>
             <th>Severity</th>
             <th>Message</th>
+            <th>Properties</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var log in Logs)
         {
-            <tr>
+            <tr class="hover:bg-gray-700">
                 <td>@log.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff")</td>
-                <td>@log.Component</td>
-                <td>@log.Severity</td>
+                <td>@log.Component.Replace("\"", "").Replace(":", " \u1433 ").Replace(".", " \u1433 ")</td>
+                <td class="@TrClassFromLog(log)">@log.Severity</td>
                 <td>@log.Message</td>
+                <td>
+                    <ul>
+                        @foreach (var prop in log.Properties)
+                        {
+                            <li>
+                                <span class="text-gray-400 font-medium">@prop.Key:</span> 
+                                <span>@prop.Value</span>
+                            </li>
+                        }
+                    </ul>
+                </td>
             </tr>
         }
     </tbody>
@@ -66,5 +76,21 @@
         Logs = await SignalR.InvokeAsync<IEnumerable<Log>>("LogsForApp", AppId);
 
         StateHasChanged();
+    }
+
+    string TrClassFromLog(Log log)
+    {
+        return log.Severity.ToLowerInvariant() switch
+        {
+            "debug" => "font-medium",
+            "trace" => "font-medium",
+            "verbose" => "font-medium",
+            "info" => "text-blue-300 font-medium",
+            "information" => "text-blue-300 font-medium",
+            "warning" => "text-yellow-300 font-medium",
+            "error" => "text-red-300 font-medium",
+            "fatal" => "text-red-300 font-medium",
+            _ => ""
+        };
     }
 }

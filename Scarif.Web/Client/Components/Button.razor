@@ -1,0 +1,21 @@
+﻿@inject NavigationManager NavigationManager
+
+<button type="button" class="p-2 md:p-6 mx-1 md:mx-4 my-2 md:my-0
+        bg-yellow-600 text-white rounded-lg md:text-xl"
+        @onclick="_ => Navigate()">
+    @Text
+</button>
+
+@code {
+    [Parameter]
+    public string Text { get; set; }
+    [Parameter]
+    public string Uri { get; set; }
+    [Parameter]
+    public bool Reload { get; set; }
+
+    internal void Navigate()
+    {
+        NavigationManager.NavigateTo(Uri, forceLoad: Reload);
+    }
+}

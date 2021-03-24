@@ -3,19 +3,17 @@
 @using Microsoft.AspNetCore.SignalR.Client
 @inject NavigationManager NavigationManager
 
-<h1>Settings</h1>
+<h2 class="text-xl md:text-4xl tracking-wide">Settings</h2>
 
-<p class="lead">This page allows you to delete apps.</p>
-
-<p>
+<p class="tracking-wide text-lg">
     Deleting an app will permanently remove it and all logs coming
     from it.
 </p>
-<p>Please allow a few seconds to populate the view when first navigating.</p>
+<p class="tracking-wide text-gray-400">Please allow a few seconds to populate the view when first navigating.</p>
 
-<table class="table">
+<table class="table border-collapse w-full m-2 md:m-4">
     <thead>
-        <tr>
+        <tr class="border-b-2 border-yellow-600">
             <th>App name</th>
             <th>Actions</th>
         </tr>
@@ -23,10 +21,10 @@
     <tbody>
         @foreach (var app in Apps)
         {
-            <tr>
+            <tr class="hover:bg-gray-700">
                 <td>@app.AppName (@app.AppId)</td>
                 <td>
-                    <button class="btn btn-danger" @onclick="_ => DeleteApp(app.AppId)">DELETE</button>
+                    <button class="bg-red-500 p-2 md:p-4 tracking-wide rounded-xl" @onclick="_ => DeleteApp(app.AppId)">DELETE</button>
                 </td>
             </tr>
         }

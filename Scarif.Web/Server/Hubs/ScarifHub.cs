@@ -38,6 +38,7 @@ namespace Scarif.Web.Server.Hubs
                 .FirstOrDefault(a => a.AppId.Equals(AppId))?
                 .Logs?
                 .OrderByDescending(l => l.Timestamp)
+                .Take(100)
                 ?? Enumerable.Empty<Log>();
         }
 

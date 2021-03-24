@@ -1,19 +1,13 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
+@using Scarif.Web.Client.Components
 
+<Jumbotron Title="Scarif Log Server"
+           Caption="Unified log server and bulk data visualization platform." />
+<Navigation />
 
-    <div class="main">
-        <div class="top-row px-4">
-        </div>
+<div class="w-full h-full p-2 md:p-8">
 
-        <div class="content px-4">
-            @Body
-        </div>
-    </div>
-
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+    @Body
 
 </div>

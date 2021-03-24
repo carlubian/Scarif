@@ -1,0 +1,14 @@
+﻿@inject NavigationManager NavigationManager
+
+<div class="w-full p-2 md:p-8 border-2 border-yellow-600 bg-gray-800 grid grid-cols-1 md:grid-cols-3 content-around justify-center">
+    <Button Text="Home"
+            Uri="/" Reload="false"/>
+    <Button Text="Settings"
+            Uri="/settings" Reload="false" />
+    <Button Text="Reload"
+            Uri="@NavigationManager.Uri" Reload="true" />
+</div>
+
+@code {
+
+}

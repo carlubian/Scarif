@@ -1,21 +1,25 @@
 ﻿@using Microsoft.AspNetCore.SignalR.Client
+
 @inject NavigationManager NavigationManager
 
-<div class="row">
+<div class="grid grid-cols-2 md:grid-cols-5 content-around justify-start space-x-2 space-y-2 md:space-x-4 md:space-y-0 mt-2 md:mt-4">
     @foreach (var app in Apps)
     {
-        <div class="col-3">
-            <div class="card border-secondary mb-3" style="max-width: 18rem;">
-                <div class="card-header">/@app.AppId</div>
-                <div class="card-body text-secondary">
-                    <h5 class="card-title">@app.AppName</h5>
-                    <p>Press the button below to access logs sent
-                    by this app.</p>
-                    <a class="btn btn-primary mx-4 my-4" href="@($"/appLogs?appId={app.AppId}")">
-                        View logs
-                    </a>
-                </div>
-            </div>
+        <div class="w-auto h-auto bg-gray-600 rounded-xl shadow-xl border-2 border-yellow-600 p-2 md:p-4
+             grid grid-cols-1 content-center justify-around">
+            <p class="justify-self-start py-2">
+                /@app.AppId
+            </p>
+            <p class="tracking-wide text-xl mb-2 md:mb-4">
+                @app.AppName
+            </p>
+            <p>
+                Press the button below to access logs sent by this app.
+            </p>
+            <button class="p-2 md:p-4 bg-yellow-600 rounded-xl tracking-wide"
+                    @onclick="_ => GoToApp(app.AppId)">
+                View logs
+            </button>
         </div>
     }
 </div>
@@ -33,5 +37,10 @@
         await SignalR.StartAsync();
         Apps = await SignalR.InvokeAsync<IEnumerable<Scarif.Core.Model.App>>("GetApps");
         StateHasChanged();
+    }
+
+    internal void GoToApp(string app)
+    {
+        NavigationManager.NavigateTo($"/appLogs?appId={app}");
     }
 }
