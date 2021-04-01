@@ -18,7 +18,7 @@ namespace Scarif.Web.Server.Core
             var User = Config.Read("Postgres:User");
             var Password = Config.Read("Postgres:Password");
 
-            optionsBuilder.UseNpgsql($"Server={Server};Database={Database};Port={Port};User Id={User};Password={Password};Ssl Mode=Require;");
+            optionsBuilder.UseSqlServer($"Server=tcp:{Server},{Port};Initial Catalog={Database};Persist Security Info=False;User ID={User};Password={Password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

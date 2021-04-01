@@ -1,10 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Scarif.Web.Server.Migrations
 {
-    public partial class DatabaseV2 : Migration
+    public partial class ChangeToSqlServer : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,8 +11,8 @@ namespace Scarif.Web.Server.Migrations
                 name: "Apps",
                 columns: table => new
                 {
-                    AppId = table.Column<string>(type: "text", nullable: false),
-                    AppName = table.Column<string>(type: "text", nullable: false)
+                    AppId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AppName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -25,12 +24,12 @@ namespace Scarif.Web.Server.Migrations
                 columns: table => new
                 {
                     LogId = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AppId = table.Column<string>(type: "text", nullable: false),
-                    Component = table.Column<string>(type: "text", nullable: false),
-                    Severity = table.Column<string>(type: "text", nullable: false),
-                    Timestamp = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    Message = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AppId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Component = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Severity = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -48,8 +47,8 @@ namespace Scarif.Web.Server.Migrations
                 columns: table => new
                 {
                     LogId = table.Column<long>(type: "bigint", nullable: false),
-                    Key = table.Column<string>(type: "text", nullable: false),
-                    Value = table.Column<string>(type: "text", nullable: false)
+                    Key = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
